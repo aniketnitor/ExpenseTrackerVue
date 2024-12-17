@@ -1,4 +1,6 @@
 <template>
+  <div>
+    <ExpenseFormComponent></ExpenseFormComponent>
     <table class="w-full text-left table-auto">
       <thead>
         <tr>
@@ -11,7 +13,7 @@
       </thead>
       <tbody>
         <tr v-for="expense in expenses" :key="expense.id">
-          <td class="px-4 py-2">{{ expense.title }}</td>
+          <td class="px-4 py-2">{{ expense.expenseName }}</td>
           <td class="px-4 py-2">{{ expense.amount }}</td>
           <td class="px-4 py-2">{{ expense.category }}</td>
           <td class="px-4 py-2">{{ expense.date }}</td>
@@ -21,20 +23,28 @@
         </tr>
       </tbody>
     </table>
-  </template>
-  
-  <script>
-  export default {
-    computed: {
-      expenses() {
-        return this.$store.getters.getExpenses;
-      }
-    },
-    methods: {
-      deleteExpense(id) {
-        this.$store.dispatch('deleteExpense', id);
-      }
+  </div>
+</template>
+
+<script>
+import ExpenseFormComponent from './ExpenseFormComponent.vue';
+
+export default {
+  components: {
+    ExpenseFormComponent
+  },
+  computed: {
+    expenses() {
+      return this.$store.getters.getExpenses;
     }
-  };
-  </script>
-  
+  },
+  mounted() {
+    this.$store.dispatch('fetchExpenses');
+  },
+  methods: {
+    deleteExpense(id) {
+      this.$store.dispatch('deleteExpense', id);
+    }
+  }
+};
+</script>

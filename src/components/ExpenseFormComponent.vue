@@ -18,7 +18,7 @@
   export default {
     data() {
       return {
-        title: '',
+        expenseName: '',
         amount: '',
         category: 'Food',
         date: new Date().toISOString().split('T')[0]
@@ -27,7 +27,7 @@
     methods: {
       addExpense() {
         const expense = {
-          title: this.title,
+          expenseName: this.title,
           amount: this.amount,
           category: this.category,
           date: this.date
