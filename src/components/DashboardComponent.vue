@@ -2,22 +2,18 @@
   <div class="bg-white p-6 rounded shadow-md">
     <h2 class="text-2xl font-semibold">Dashboard</h2>
     
-    <!-- Total Expenses Tile -->
     <div class="mt-6 p-4 bg-gray-100 rounded shadow-md">
       <h3 class="text-xl font-semibold">Total Expenses for this Month</h3>
       <p class="text-3xl font-bold">{{ totalExpenses }}</p>
     </div>
 
-    <!-- Pie Chart and Bar Chart -->
     <div class="flex space-x-12 mt-6">
       
-      <!-- Pie Chart -->
       <div class="flex-1 p-4 bg-gray-100 rounded shadow-md">
         <h3 class="text-xl font-semibold mb-4">Expenses Breakdown by Category</h3>
         <canvas id="expensePieChart" class="w-full pie"></canvas>
       </div>
 
-      <!-- Bar Chart -->
       <div class="flex-1 p-4 bg-gray-100 rounded shadow-md">
         <h3 class="text-xl font-semibold mb-4">Weekly Expenses</h3>
         <canvas id="weeklyExpensesChart" class="w-full bar"></canvas>
@@ -39,17 +35,14 @@ export default {
     const categoryData = ref({});
     const weeklyExpenses = ref({});
 
-    // Access expenses from Vuex store using a computed property
     const expenses = computed(() => {
       return store.getters.getExpenses;
     });
 
-    // Function to calculate the total expenses and categorize them by category
     const calculateExpenses = () => {
       let total = 0;
       let categories = {};
 
-      // Iterate through each expense to calculate total and categorize
       expenses.value.forEach(expense => {
         total += expense.amount;
 
@@ -64,7 +57,6 @@ export default {
       categoryData.value = categories;
     };
 
-    // Function to calculate weekly expenses
     const calculateWeeklyExpenses = () => {
       let weeklyExpensesData = {
         Monday: 0,
@@ -86,7 +78,6 @@ export default {
       weeklyExpenses.value = weeklyExpensesData;
     };
 
-    // Function to create the Pie Chart using Chart.js
     const createPieChart = () => {
       const ctx = document.getElementById('expensePieChart').getContext('2d');
       const chartData = {
@@ -119,7 +110,6 @@ export default {
       });
     };
 
-    // Function to create the Bar Chart using Chart.js
     const createBarChart = () => {
       const ctx = document.getElementById('weeklyExpensesChart').getContext('2d');
       const chartData = {
@@ -152,7 +142,6 @@ export default {
       });
     };
 
-    // On mounted, fetch expenses from store, calculate expenses and render the charts
     onMounted(() => {
       store.dispatch('fetchExpenses').then(() => {
         calculateExpenses();

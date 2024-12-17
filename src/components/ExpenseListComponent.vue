@@ -1,6 +1,25 @@
 <template>
   <div>
     <ExpenseFormComponent></ExpenseFormComponent>
+
+    <div class="flex space-x-4 mb-4">
+      <select v-model="filterCategory" class="w-60 p-2 border rounded">
+        <option value="">All Categories</option>
+        <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+      </select>
+
+      <input v-model="filterKeyword" type="text"  class="w-50 p-2 border rounded" placeholder="Search by keyword">
+
+      <div class="flex space-x-2">
+        <input v-model="filterStartDate" type="date" class="w-50 p-2 border rounded">
+        <input v-model="filterEndDate" type="date" class="w-50 p-2 border rounded">
+      </div>
+
+      <button @click="clearFilters" class="w-40 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md">
+        Clear Filters
+      </button>
+    </div> 
+
     <table class="w-full text-left table-auto">
       <thead>
         <tr>
@@ -12,7 +31,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="expense in expenses" :key="expense.id">
+        <tr v-for="expense in filteredExpenses" :key="expense.id">
           <td class="px-4 py-2">{{ expense.expenseName }}</td>
           <td class="px-4 py-2">{{ expense.amount }}</td>
           <td class="px-4 py-2">{{ expense.category }}</td>
@@ -43,10 +62,31 @@ export default {
   components: {
     ExpenseFormComponent
   },
+  data() {
+    return {
+      filterCategory: '',
+      filterKeyword: '',
+      filterStartDate: '',
+      filterEndDate: '',
+    };
+  },
   computed: {
     expenses() {
       return this.$store.getters.getExpenses;
-    }
+    },
+    categories() {
+      return [...new Set(this.expenses.map(expense => expense.category))];
+    },
+    filteredExpenses() {
+      return this.expenses.filter(expense => {
+        const categoryMatch = this.filterCategory === '' || expense.category === this.filterCategory;
+        const keywordMatch = expense.expenseName.toLowerCase().includes(this.filterKeyword.toLowerCase());
+        const startDateMatch = this.filterStartDate === '' || new Date(expense.date) >= new Date(this.filterStartDate);
+        const endDateMatch = this.filterEndDate === '' || new Date(expense.date) <= new Date(this.filterEndDate);
+
+        return categoryMatch && keywordMatch && startDateMatch && endDateMatch;
+      });
+    },
   },
   mounted() {
     this.$store.dispatch('fetchExpenses');
@@ -54,6 +94,12 @@ export default {
   methods: {
     deleteExpense(id) {
       this.$store.dispatch('deleteExpense', id);
+    },
+    clearFilters() {
+      this.filterCategory = '';
+      this.filterKeyword = '';
+      this.filterStartDate = '';
+      this.filterEndDate = '';
     }
   }
 };
