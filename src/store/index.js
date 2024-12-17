@@ -6,44 +6,43 @@ export default createStore({
     user: null,
     expenses: [],
     isAuthenticated: false,
-    username: '', // Store the username to make requests for expenses
+    username: '', 
   },
   mutations: {
     setUser(state, user) {
       state.user = user;
       state.isAuthenticated = true;
-      state.username = user.username; // Store username to make expense-related requests
+      state.username = user.username; 
     },
     logout(state) {
       state.user = null;
       state.isAuthenticated = false;
-      state.username = ''; // Clear username
-      state.expenses = []; // Clear expenses
+      state.username = ''; 
+      state.expenses = []; 
     },
     setExpenses(state, expenses) {
       state.expenses = expenses;
     },
     addExpense(state, expense) {
-      state.expenses.unshift(expense); // Add expense at the beginning of the list
+      state.expenses.unshift(expense); 
     },
     removeExpense(state, expenseId) {
       state.expenses = state.expenses.filter(exp => exp.id !== expenseId);
     },
+    updateExpense(state, updatedExpense) {
+      const index = state.expenses.findIndex(exp => exp.id === updatedExpense.id);
+      if (index !== -1) {
+        state.expenses.splice(index, 1, updatedExpense); 
+      }
+    }
   },
   actions: {
-    // Login action
     login({ commit }, userData) {
       const { username, password } = userData;
       axios.post(`/api/login?username=${username}&password=${password}`)
         .then(response => {
           if (response.data === 'Login successful') {
-            commit('setUser', userData); // Commit the user data to Vuex
-    
-            // Optionally, fetch user expenses after login (if needed)
-            // this.dispatch('fetchExpenses', username)
-            //   .catch(error => {
-            //     console.error('Failed to fetch expenses:', error); // Error handling
-            //   });
+            commit('setUser', userData); 
           } else {
             console.error('Login failed');
           }
@@ -53,44 +52,53 @@ export default createStore({
         });
     },
 
-    // Logout action
     logout({ commit }) {
-      commit('logout'); // Clear user data and reset authentication state
+      commit('logout'); 
     },
 
-    // Fetch expenses for the logged-in user
     fetchExpenses({ commit, state }) {
-      if (!state.username) return; // If no username, return early
+      if (!state.username) return; 
 
       axios.get(`/api/expenses?username=${state.username}`)
         .then(response => {
-          commit('setExpenses', response.data); // Commit expenses to Vuex state
+          commit('setExpenses', response.data);
         })
         .catch(error => {
           console.error('Failed to fetch expenses:', error);
         });
     },
 
-    // Add an expense for the logged-in user
     addExpense({ commit, state }, expenseData) {
-      if (!state.username) return; // Ensure user is logged in
+      if (!state.username) return; 
 
       axios.post(`/api/expenses?username=${state.username}`, expenseData)
         .then(response => {
-          commit('addExpense', response.data); // Commit new expense to Vuex
+          commit('addExpense', response.data); 
         })
         .catch(error => {
           console.error('Failed to add expense:', error);
         });
     },
 
-    // Delete an expense by its ID
+    updateExpense({ commit, state }, { id, expense }) {
+      if (!state.username) return; 
+  
+      axios.put(`/api/expenses/${id}?username=${state.username}`, expense)
+        .then(response => {
+          commit('updateExpense', response.data); 
+        })
+        .catch(error => {
+          console.error('Failed to update expense:', error);
+        });
+    },
+  
+
     deleteExpense({ commit, state }, expenseId) {
-      if (!state.username) return; // Ensure user is logged in
+      if (!state.username) return; 
 
       axios.delete(`/api/expenses/${expenseId}?username=${state.username}`)
         .then(() => {
-          commit('removeExpense', expenseId); // Remove the expense from Vuex state
+          commit('removeExpense', expenseId); 
         })
         .catch(error => {
           console.error('Failed to delete expense:', error);

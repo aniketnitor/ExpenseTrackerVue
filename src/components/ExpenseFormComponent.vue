@@ -1,16 +1,16 @@
 <template>
-    <form @submit.prevent="addExpense" class="space-y-4">
-      <input v-model="title" type="text" placeholder="Expense Title" class="w-full p-2 border rounded" />
-      <input v-model="amount" type="number" placeholder="Amount" class="w-full p-2 border rounded" />
-      <select v-model="category" class="w-full p-2 border rounded">
+    <form @submit.prevent="addExpense" class="space-x-2 mb-5">
+      <input v-model="title" type="text" placeholder="Expense Title" class="w-80 p-2 border rounded" />
+      <input v-model="amount" type="number" placeholder="Amount" class="w-40 p-2 border rounded" />
+      <select v-model="category" class="w-60 p-2 border rounded">
         <option value="Food">Food</option>
         <option value="Transport">Transport</option>
         <option value="Utilities">Utilities</option>
         <option value="Entertainment">Entertainment</option>
         <option value="Miscellaneous">Miscellaneous</option>
       </select>
-      <input v-model="date" type="date" class="w-full p-2 border rounded" />
-      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md">Add Expense</button>
+      <input v-model="date" type="date" class="w-50 p-2 border rounded" />
+      <button type="submit" class="w-40 bg-blue-600 text-white py-2 rounded-md">Add Expense</button>
     </form>
   </template>
   

@@ -48,8 +48,8 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.dispatch('logout');  // Dispatch the 'logout' action to clear the state
-      this.$router.push({ path: '/' });  // Navigate to the login page
+      this.$store.dispatch('logout');  
+      this.$router.push({ path: '/' });  
     },
   },
 };
