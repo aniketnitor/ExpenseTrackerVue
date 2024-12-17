@@ -4,7 +4,7 @@
     
     <div class="mt-6 p-4 bg-gray-100 rounded shadow-md">
       <h3 class="text-xl font-semibold">Total Expenses for this Month</h3>
-      <p class="text-3xl font-bold">{{ totalExpenses }}</p>
+      <p class="text-3xl font-bold">&#x20B9; {{ totalExpenses }}</p>
     </div>
 
     <div class="flex space-x-12 mt-6">
@@ -85,7 +85,7 @@ export default {
         datasets: [{
           label: 'Expense Breakdown',
           data: Object.values(categoryData.value),
-          backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A6'], // Customize colors
+          backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A6'], 
         }]
       };
 
@@ -117,7 +117,7 @@ export default {
         datasets: [{
           label: 'Weekly Expenses',
           data: Object.values(weeklyExpenses.value),
-          backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A6'], // Customize colors
+          backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#FF33A6'], 
         }]
       };
 

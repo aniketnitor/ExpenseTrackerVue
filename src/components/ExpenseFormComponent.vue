@@ -1,47 +1,75 @@
 <template>
-    <form @submit.prevent="addExpense" class="space-x-2 mb-5">
-      <input v-model="title" type="text" placeholder="Expense Title" class="w-80 p-2 border rounded" />
-      <input v-model="amount" type="number" placeholder="Amount" class="w-40 p-2 border rounded" />
-      <select v-model="category" class="w-60 p-2 border rounded">
-        <option value="Food">Food</option>
-        <option value="Transport">Transport</option>
-        <option value="Utilities">Utilities</option>
-        <option value="Entertainment">Entertainment</option>
-        <option value="Miscellaneous">Miscellaneous</option>
-      </select>
-      <input v-model="date" type="date" class="w-50 p-2 border rounded" />
-      <button type="submit" class="w-40 bg-blue-600 text-white py-2 rounded-md">Add Expense</button>
-    </form>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        expenseName: '',
-        amount: '',
-        category: 'Food',
-        date: new Date().toISOString().split('T')[0]
-      };
+  <form @submit.prevent="handleSubmit" class="space-x-2 mb-5">
+    <input v-model="title" type="text" placeholder="Expense Title" class="w-80 p-2 border rounded" />
+    <input v-model="amount" type="number" placeholder="Amount" class="w-40 p-2 border rounded" />
+    <select v-model="category" class="w-60 p-2 border rounded">
+      <option value="Food">Food</option>
+      <option value="Transport">Transport</option>
+      <option value="Utilities">Utilities</option>
+      <option value="Entertainment">Entertainment</option>
+      <option value="Miscellaneous">Miscellaneous</option>
+    </select>
+    <input v-model="date" type="date" class="w-50 p-2 border rounded" />
+    <button type="submit" class="w-40 bg-blue-600 text-white py-2 rounded-md">
+      {{ isEditMode ? 'Update Expense' : 'Add Expense' }}
+    </button>
+  </form>
+</template>
+
+<script>
+export default {
+  props: {
+    expenseToEdit: Object,
+  },
+  data() {
+    return {
+      title: '',
+      amount: '',
+      category: 'Food',
+      date: new Date().toISOString().split('T')[0],
+    };
+  },
+  computed: {
+    isEditMode() {
+      return this.expenseToEdit !== null;
     },
-    methods: {
-      addExpense() {
-        const expense = {
-          expenseName: this.title,
-          amount: this.amount,
-          category: this.category,
-          date: this.date
-        };
-        this.$store.dispatch('addExpense', expense);
-        this.resetForm();
-      },
-      resetForm() {
-        this.title = '';
-        this.amount = '';
-        this.category = 'Food';
-        this.date = new Date().toISOString().split('T')[0];
+  },
+  watch: {
+    expenseToEdit(newExpense) {
+      if (newExpense) {
+        this.title = newExpense.expenseName;
+        this.amount = newExpense.amount;
+        this.category = newExpense.category;
+        this.date = newExpense.date;
       }
-    }
-  };
-  </script>
-  
+    },
+  },
+  methods: {
+    handleSubmit() {
+      const expense = {
+        expenseName: this.title,
+        amount: this.amount,
+        category: this.category,
+        date: this.date,
+      };
+
+      if (this.isEditMode) {
+        this.$store.dispatch('updateExpense', { id: this.expenseToEdit.id, expense })
+          .then(() => {
+            this.$emit('resetForm'); 
+          });
+      } else {
+        this.$store.dispatch('addExpense', expense);
+      }
+
+      this.resetForm();
+    },
+    resetForm() {
+      this.title = '';
+      this.amount = '';
+      this.category = 'Food';
+      this.date = new Date().toISOString().split('T')[0];
+    },
+  },
+};
+</script>
